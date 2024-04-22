@@ -3,23 +3,21 @@
 /// Copyright © 2021 & onwards, Hitesh Kumar Saini <saini123hitesh@gmail.com>.
 /// All rights reserved.
 /// Use of this source code is governed by MIT license that can be found in the LICENSE file.
-import 'dart:io';
-import 'dart:ffi';
 import 'dart:async';
 import 'dart:collection';
-import 'package:flutter/services.dart';
-import 'package:flutter/foundation.dart';
+import 'dart:ffi';
+import 'dart:io';
 
-import 'package:media_kit/media_kit.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 // ignore_for_file: unused_import, implementation_imports
 import 'package:media_kit/ffi/ffi.dart';
-import 'package:media_kit/src/player/native/core/native_library.dart';
-
 import 'package:media_kit/generated/libmpv/bindings.dart';
-
+import 'package:media_kit/media_kit.dart';
+import 'package:media_kit/src/player/native/core/native_library.dart';
 import 'package:media_kit_video/src/utils/query_decoders.dart';
-import 'package:media_kit_video/src/video_controller/video_controller.dart';
 import 'package:media_kit_video/src/video_controller/platform_video_controller.dart';
+import 'package:media_kit_video/src/video_controller/video_controller.dart';
 
 /// {@template native_video_controller}
 ///

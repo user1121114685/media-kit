@@ -3,24 +3,21 @@
 /// Copyright © 2021 & onwards, Hitesh Kumar Saini <saini123hitesh@gmail.com>.
 /// All rights reserved.
 /// Use of this source code is governed by MIT license that can be found in the LICENSE file.
-import 'dart:io';
-import 'dart:ffi';
 import 'dart:async';
 import 'dart:collection';
-import 'package:flutter/services.dart';
+import 'dart:ffi';
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
-import 'package:synchronized/synchronized.dart';
-
-import 'package:media_kit/media_kit.dart';
-
+import 'package:flutter/services.dart';
 // ignore_for_file: implementation_imports
 import 'package:media_kit/ffi/ffi.dart';
-import 'package:media_kit/src/player/native/core/native_library.dart';
-
 import 'package:media_kit/generated/libmpv/bindings.dart';
-
+import 'package:media_kit/media_kit.dart';
+import 'package:media_kit/src/player/native/core/native_library.dart';
 import 'package:media_kit_video/src/utils/query_decoders.dart';
 import 'package:media_kit_video/src/video_controller/platform_video_controller.dart';
+import 'package:synchronized/synchronized.dart';
 
 /// {@template android_video_controller}
 ///
@@ -310,28 +307,37 @@ class AndroidVideoController extends PlatformVideoController {
     NativeLibrary.ensureInitialized();
     final mpv = MPV(DynamicLibrary.open(NativeLibrary.path));
 
-    final values = configuration.vo == null || configuration.hwdec == null
-        ? {
-            // It is necessary to set vo=null here to avoid SIGSEGV, --wid must be assigned before vo=gpu is set.
-            'vo': 'null',
-            'hwdec': await controller.hwdec,
-          }
-        : {
-            'vo': 'null',
-            'hwdec': await controller.hwdec,
-          };
+    Map<String, String> values =
+        configuration.vo == null || configuration.hwdec == null
+            ? {
+                // It is necessary to set vo=null here to avoid SIGSEGV, --wid must be assigned before vo=gpu is set.
+                'vo': 'null',
+                'hwdec': await controller.hwdec,
+              }
+            : {
+                'vo': 'null',
+                'hwdec': await controller.hwdec,
+              };
     values.addAll(
       {
         'vid': 'auto',
         'opengl-es': 'yes',
-        'force-window': 'yes',
+        'force-window': 'no',
         'gpu-context': 'android',
+        // 兼容华为https://juejin.cn/post/7200191765516501049
+        'fbo-format': 'auto',
         'sub-use-margins': 'no',
         'sub-font-provider': 'none',
         'sub-scale-with-window': 'yes',
-        'hwdec-codecs': 'h264,hevc,mpeg4,mpeg2video,vp8,vp9,av1',
+        // 'vf': 'format=yuv420p',
+        // 'vd-lavc-dr': 'no',
+        // 'hwdec-codecs': 'h264,hevc,mpeg4,mpeg2video,vp8,vp9,av1',
       },
     );
+    // if (configuration.width != null && configuration.height != null) {
+    //   values.addAll(
+    //       {'vf-add': "scale=${configuration.width}:${configuration.height}"});
+    // }
 
     for (final entry in values.entries) {
       final name = entry.key.toNativeUtf8();

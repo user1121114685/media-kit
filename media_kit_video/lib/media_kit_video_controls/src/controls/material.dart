@@ -519,6 +519,8 @@ class _MaterialVideoControlsState extends State<_MaterialVideoControls> {
       _speedUpIndicator = false;
     });
     controller(context).player.setRate(1.0);
+    // controller(context).player.seek(controller(context).player.state.position);
+
   }
 
   @override

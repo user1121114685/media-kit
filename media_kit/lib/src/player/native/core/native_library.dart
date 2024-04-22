@@ -4,8 +4,10 @@
 /// All rights reserved.
 /// Use of this source code is governed by MIT license that can be found in the LICENSE file.
 
-import 'dart:io';
 import 'dart:ffi';
+import 'dart:io';
+
+import 'package:flutter/material.dart';
 
 /// {@template native_library}
 ///
@@ -74,7 +76,9 @@ abstract class NativeLibrary {
           DynamicLibrary.open(name);
           _resolved = name;
           return;
-        } catch (_) {}
+        } catch (e) {
+          debugPrint("当前打开 $name 错误 ${e.toString()}");
+        }
       }
       // If the dynamic library is not loaded, throw an [Exception].
       if (_resolved == null) {

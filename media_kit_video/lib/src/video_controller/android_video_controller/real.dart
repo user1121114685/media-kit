@@ -325,7 +325,7 @@ class AndroidVideoController extends PlatformVideoController {
         'force-window': 'no',
         'gpu-context': 'android',
         // 兼容华为https://juejin.cn/post/7200191765516501049
-        'fbo-format': 'auto',
+        // 'gpu-dumb-mode': 'yes',
         'sub-use-margins': 'no',
         'sub-font-provider': 'none',
         'sub-scale-with-window': 'yes',

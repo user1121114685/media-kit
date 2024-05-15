@@ -857,7 +857,7 @@ class _MaterialVideoControlsState extends State<_MaterialVideoControls> {
                               final brightness = _brightnessValue -
                                   delta /
                                       _theme(context)
-                                          .verticalGestureSensitivity;
+                                          .verticalGestureSensitivity/5;
                               final result = brightness.clamp(0.0, 1.0);
                               setBrightness(result);
                             }
@@ -871,7 +871,7 @@ class _MaterialVideoControlsState extends State<_MaterialVideoControls> {
                               final volume = _volumeValue -
                                   delta /
                                       _theme(context)
-                                          .verticalGestureSensitivity;
+                                          .verticalGestureSensitivity/5;
                               final result = volume.clamp(0.0, 1.0);
                               setVolume(result);
                             }

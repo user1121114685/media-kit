@@ -1,1 +1,1 @@
-git merge upstream/main
+git rebase upstream/main

@@ -5,13 +5,13 @@
 /// Use of this source code is governed by MIT license that can be found in the LICENSE file.
 // ignore_for_file: non_constant_identifier_names
 import 'dart:async';
-import 'package:flutter/material.dart';
+
 import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-
-import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
 import 'package:media_kit_video/media_kit_video_controls/src/controls/extensions/duration.dart';
+import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
 import 'package:media_kit_video/media_kit_video_controls/src/controls/widgets/video_controls_theme_data_injector.dart';
 
 /// {@template material_desktop_video_controls}
@@ -378,6 +378,8 @@ class _MaterialDesktopVideoControlsState
   late bool visible = _theme(context).visibleOnMount;
 
   Timer? _timer;
+  bool _isSingleTap = false;
+  Timer? _doubleTapTimer;
 
   late /* private */ var playlist = controller(context).player.state.playlist;
   late bool buffering = controller(context).player.state.buffering;
@@ -386,6 +388,7 @@ class _MaterialDesktopVideoControlsState
 
   final List<StreamSubscription> subscriptions = [];
 
+  /// 获取底部高度
   double get subtitleVerticalShiftOffset =>
       (_theme(context).padding?.bottom ?? 0.0) +
       (_theme(context).bottomButtonBarMargin.vertical) +
@@ -444,6 +447,7 @@ class _MaterialDesktopVideoControlsState
     for (final subscription in subscriptions) {
       subscription.cancel();
     }
+    _doubleTapTimer?.cancel();
     super.dispose();
   }
 
@@ -604,30 +608,41 @@ class _MaterialDesktopVideoControlsState
                 onTapDown: !_theme(context).playAndPauseOnTap
                     ? null
                     : (TapDownDetails details) {
-                        final RenderBox box =
-                            context.findRenderObject() as RenderBox;
-                        final Offset localPosition =
-                            box.globalToLocal(details.globalPosition);
-                        const double tapPadding = 10.0;
-                        if (!mount ||
-                            localPosition.dy <
-                                box.size.height -
-                                    subtitleVerticalShiftOffset -
-                                    tapPadding) {
-                          // Only play and pause when the bottom seek bar is visible
-                          // and when clicking outside of the bottom seek bar region
-                          controller(context).player.playOrPause();
-                        }
+                        _isSingleTap = true;
+                        _doubleTapTimer =
+                            Timer(const Duration(milliseconds: 400), () {
+                          if (_isSingleTap) {
+                            final RenderBox box =
+                                context.findRenderObject() as RenderBox;
+                            final Offset localPosition =
+                                box.globalToLocal(details.globalPosition);
+                            const double tapPadding = 10.0;
+                            debugPrint(
+                                "当前点击高度 ${localPosition.dy}  获取的top高度 ${_theme(context).topButtonBarMargin.horizontal}");
+                            if (!mount ||
+                                localPosition.dy <
+                                        box.size.height -
+                                            subtitleVerticalShiftOffset -
+                                            tapPadding &&
+                                    localPosition.dy >
+                                        _theme(context)
+                                                .topButtonBarMargin
+                                                .horizontal +
+                                            tapPadding) {
+                              // Only play and pause when the bottom seek bar is visible
+                              // and when clicking outside of the bottom seek bar region
+                              // 还要比TOP的高度低才行
+                              controller(context).player.playOrPause();
+                            }
+                          }
+                        });
                       },
-                onTapUp: !_theme(context).toggleFullscreenOnDoublePress
+                onDoubleTap: !_theme(context).toggleFullscreenOnDoublePress
                     ? null
-                    : (e) {
-                        final now = DateTime.now();
-                        final difference = now.difference(last);
-                        last = now;
-                        if (difference < const Duration(milliseconds: 400)) {
-                          toggleFullscreen(context);
-                        }
+                    : () {
+                        _isSingleTap = false;
+                        _doubleTapTimer?.cancel();
+                        toggleFullscreen(context);
                       },
                 onPanUpdate: _theme(context).modifyVolumeOnScroll
                     ? (e) {

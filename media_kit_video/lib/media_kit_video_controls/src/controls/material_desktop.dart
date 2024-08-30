@@ -391,7 +391,7 @@ class _MaterialDesktopVideoControlsState
   /// 获取底部高度
   double get subtitleVerticalShiftOffset =>
       (_theme(context).padding?.bottom ?? 0.0) +
-      (_theme(context).bottomButtonBarMargin.vertical) +
+      (_theme(context).bottomButtonBarMargin.horizontal) +
       (_theme(context).bottomButtonBar.isNotEmpty
           ? _theme(context).buttonBarHeight
           : 0.0);
@@ -1035,81 +1035,108 @@ class MaterialDesktopSeekBarState extends State<MaterialDesktopSeekBar> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      clipBehavior: Clip.none,
-      margin: _theme(context).seekBarMargin,
-      child: LayoutBuilder(
-        builder: (context, constraints) => MouseRegion(
-          cursor: SystemMouseCursors.click,
-          onHover: (e) => onHover(e, constraints),
-          onEnter: (e) => onEnter(e, constraints),
-          onExit: (e) => onExit(e, constraints),
-          child: Listener(
-            onPointerMove: (e) => onPointerMove(e, constraints),
-            onPointerDown: (e) => onPointerDown(),
-            onPointerUp: (e) => onPointerUp(),
-            child: Container(
-              color: const Color(0x00000000),
-              width: constraints.maxWidth,
-              height: _theme(context).seekBarContainerHeight,
-              child: Stack(
-                clipBehavior: Clip.none,
-                alignment: Alignment.centerLeft,
-                children: [
-                  AnimatedContainer(
-                    width: constraints.maxWidth,
-                    height: hover
-                        ? _theme(context).seekBarHoverHeight
-                        : _theme(context).seekBarHeight,
+    return ClipRRect(
+      borderRadius:
+          BorderRadius.circular(_theme(context).seekBarThumbSize / 2), // 调整圆角半径
+      child: Container(
+        color: Colors.transparent,
+        clipBehavior: Clip.none,
+        margin: _theme(context).seekBarMargin,
+        child: LayoutBuilder(
+          builder: (context, constraints) => MouseRegion(
+            cursor: SystemMouseCursors.click,
+            onHover: (e) => onHover(e, constraints),
+            onEnter: (e) => onEnter(e, constraints),
+            onExit: (e) => onExit(e, constraints),
+            child: Listener(
+              onPointerMove: (e) => onPointerMove(e, constraints),
+              onPointerDown: (e) => onPointerDown(),
+              onPointerUp: (e) => onPointerUp(),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(
+                    _theme(context).seekBarThumbSize / 2), // 调整圆角半径
+                child: Container(
+                  color: Colors.transparent,
+                  width: constraints.maxWidth,
+                  height: _theme(context).seekBarContainerHeight,
+                  child: Stack(
+                    clipBehavior: Clip.none,
                     alignment: Alignment.centerLeft,
-                    duration: _theme(context).seekBarThumbTransitionDuration,
-                    color: _theme(context).seekBarColor,
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      alignment: Alignment.centerLeft,
-                      children: [
-                        Container(
-                          width: constraints.maxWidth * slider,
-                          color: _theme(context).seekBarHoverColor,
-                        ),
-                        Container(
-                          width: constraints.maxWidth * bufferPercent,
-                          color: _theme(context).seekBarBufferColor,
-                        ),
-                        Container(
-                          width: click
-                              ? constraints.maxWidth * slider
-                              : constraints.maxWidth * positionPercent,
-                          color: _theme(context).seekBarPositionColor,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    left: click
-                        ? (constraints.maxWidth -
-                                _theme(context).seekBarThumbSize / 2) *
-                            slider
-                        : (constraints.maxWidth -
-                                _theme(context).seekBarThumbSize / 2) *
-                            positionPercent,
-                    child: AnimatedContainer(
-                      width: hover || click
-                          ? _theme(context).seekBarThumbSize
-                          : 0.0,
-                      height: hover || click
-                          ? _theme(context).seekBarThumbSize
-                          : 0.0,
-                      duration: _theme(context).seekBarThumbTransitionDuration,
-                      decoration: BoxDecoration(
-                        color: _theme(context).seekBarThumbColor,
-                        borderRadius: BorderRadius.circular(
-                          _theme(context).seekBarThumbSize / 2,
+                    children: [
+                      AnimatedContainer(
+                        width: constraints.maxWidth,
+                        height: hover
+                            ? _theme(context).seekBarHoverHeight
+                            : _theme(context).seekBarHeight,
+                        alignment: Alignment.centerLeft,
+                        duration:
+                            _theme(context).seekBarThumbTransitionDuration,
+                        color: _theme(context).seekBarColor,
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          alignment: Alignment.centerLeft,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                  _theme(context).seekBarThumbSize /
+                                      2), // 调整圆角半径
+                              child: Container(
+                                width: constraints.maxWidth * slider,
+                                color: _theme(context).seekBarHoverColor,
+                              ),
+                            ),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                  _theme(context).seekBarThumbSize /
+                                      2), // 调整圆角半径
+                              child: Container(
+                                width: constraints.maxWidth * bufferPercent,
+                                color: _theme(context).seekBarBufferColor,
+                              ),
+                            ),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                  _theme(context).seekBarThumbSize /
+                                      2), // 调整圆角半径
+                              child: Container(
+                                width: click
+                                    ? constraints.maxWidth * slider
+                                    : constraints.maxWidth * positionPercent,
+                                color: _theme(context).seekBarPositionColor,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
+                      Positioned(
+                        left: click
+                            ? (constraints.maxWidth -
+                                    _theme(context).seekBarThumbSize / 2) *
+                                slider
+                            : (constraints.maxWidth -
+                                        _theme(context).seekBarThumbSize / 2) *
+                                    positionPercent -
+                                _theme(context).seekBarThumbSize / 2,
+                        child: AnimatedContainer(
+                          width: hover || click
+                              ? _theme(context).seekBarThumbSize
+                              : 0.0,
+                          height: hover || click
+                              ? _theme(context).seekBarThumbSize
+                              : 0.0,
+                          duration:
+                              _theme(context).seekBarThumbTransitionDuration,
+                          decoration: BoxDecoration(
+                            color: _theme(context).seekBarThumbColor,
+                            borderRadius: BorderRadius.circular(
+                              _theme(context).seekBarThumbSize / 2,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           ),

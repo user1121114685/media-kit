@@ -768,6 +768,23 @@ class _MaterialDesktopVideoControlsState
                                         ),
                                       ),
                                     ),
+                                    if (_theme(context)
+                                        .bottomButtonBar
+                                        .isNotEmpty)
+                                      Container(
+                                        height: _theme(context).buttonBarHeight,
+                                        margin: _theme(context)
+                                            .bottomButtonBarMargin,
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children:
+                                              _theme(context).bottomButtonBar,
+                                        ),
+                                      ),
                                     if (_theme(context).displaySeekBar)
                                       Transform.translate(
                                         offset: _theme(context)
@@ -793,23 +810,6 @@ class _MaterialDesktopVideoControlsState
                                               },
                                             );
                                           },
-                                        ),
-                                      ),
-                                    if (_theme(context)
-                                        .bottomButtonBar
-                                        .isNotEmpty)
-                                      Container(
-                                        height: _theme(context).buttonBarHeight,
-                                        margin: _theme(context)
-                                            .bottomButtonBarMargin,
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children:
-                                              _theme(context).bottomButtonBar,
                                         ),
                                       ),
                                   ],
@@ -1035,35 +1035,35 @@ class MaterialDesktopSeekBarState extends State<MaterialDesktopSeekBar> {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius:
-          BorderRadius.circular(_theme(context).seekBarThumbSize / 2), // 调整圆角半径
-      child: Container(
-        color: Colors.transparent,
-        clipBehavior: Clip.none,
-        margin: _theme(context).seekBarMargin,
-        child: LayoutBuilder(
-          builder: (context, constraints) => MouseRegion(
-            cursor: SystemMouseCursors.click,
-            onHover: (e) => onHover(e, constraints),
-            onEnter: (e) => onEnter(e, constraints),
-            onExit: (e) => onExit(e, constraints),
-            child: Listener(
-              onPointerMove: (e) => onPointerMove(e, constraints),
-              onPointerDown: (e) => onPointerDown(),
-              onPointerUp: (e) => onPointerUp(),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(
-                    _theme(context).seekBarThumbSize / 2), // 调整圆角半径
-                child: Container(
-                  color: Colors.transparent,
-                  width: constraints.maxWidth,
-                  height: _theme(context).seekBarContainerHeight,
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    alignment: Alignment.centerLeft,
-                    children: [
-                      AnimatedContainer(
+    return Container(
+      color: Colors.transparent,
+      clipBehavior: Clip.none,
+      margin: _theme(context).seekBarMargin,
+      child: LayoutBuilder(
+        builder: (context, constraints) => MouseRegion(
+          cursor: SystemMouseCursors.click,
+          onHover: (e) => onHover(e, constraints),
+          onEnter: (e) => onEnter(e, constraints),
+          onExit: (e) => onExit(e, constraints),
+          child: Listener(
+            onPointerMove: (e) => onPointerMove(e, constraints),
+            onPointerDown: (e) => onPointerDown(),
+            onPointerUp: (e) => onPointerUp(),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(
+                  _theme(context).seekBarThumbSize / 2), // 调整圆角半径
+              child: Container(
+                color: Colors.transparent,
+                width: constraints.maxWidth,
+                height: _theme(context).seekBarContainerHeight,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  alignment: Alignment.centerLeft,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(
+                          _theme(context).seekBarThumbSize / 2), // 调整圆角半径
+                      child: AnimatedContainer(
                         width: constraints.maxWidth,
                         height: hover
                             ? _theme(context).seekBarHoverHeight
@@ -1108,34 +1108,33 @@ class MaterialDesktopSeekBarState extends State<MaterialDesktopSeekBar> {
                           ],
                         ),
                       ),
-                      Positioned(
-                        left: click
-                            ? (constraints.maxWidth -
-                                    _theme(context).seekBarThumbSize / 2) *
-                                slider
-                            : (constraints.maxWidth -
-                                        _theme(context).seekBarThumbSize / 2) *
-                                    positionPercent -
-                                _theme(context).seekBarThumbSize / 2,
-                        child: AnimatedContainer(
-                          width: hover || click
-                              ? _theme(context).seekBarThumbSize
-                              : 0.0,
-                          height: hover || click
-                              ? _theme(context).seekBarThumbSize
-                              : 0.0,
-                          duration:
-                              _theme(context).seekBarThumbTransitionDuration,
-                          decoration: BoxDecoration(
-                            color: _theme(context).seekBarThumbColor,
-                            borderRadius: BorderRadius.circular(
-                              _theme(context).seekBarThumbSize / 2,
-                            ),
+                    ),
+                    Positioned(
+                      left: click
+                          ? (constraints.maxWidth -
+                                  _theme(context).seekBarThumbSize) *
+                              slider
+                          : (constraints.maxWidth -
+                                  _theme(context).seekBarThumbSize) *
+                              positionPercent,
+                      child: AnimatedContainer(
+                        width: hover || click
+                            ? _theme(context).seekBarThumbSize
+                            : 0.0,
+                        height: hover || click
+                            ? _theme(context).seekBarThumbSize
+                            : 0.0,
+                        duration:
+                            _theme(context).seekBarThumbTransitionDuration,
+                        decoration: BoxDecoration(
+                          color: _theme(context).seekBarThumbColor,
+                          borderRadius: BorderRadius.circular(
+                            _theme(context).seekBarThumbSize / 2,
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -1520,17 +1519,21 @@ class MaterialDesktopVolumeButtonState
                     children: [
                       const SizedBox(width: 12.0),
                       SizedBox(
-                        width: widget.sliderWidth ?? 52.0,
+                        width:
+                            widget.iconSize != null ? widget.iconSize! * 2 : 52,
                         child: SliderTheme(
                           data: SliderThemeData(
-                            trackHeight: 1.2,
+                            trackHeight: widget.iconSize != null
+                                ? widget.iconSize! / 4
+                                : (_theme(context).buttonBarButtonSize * 0.8),
                             inactiveTrackColor: _theme(context).volumeBarColor,
                             activeTrackColor:
                                 _theme(context).volumeBarActiveColor,
                             thumbColor: _theme(context).volumeBarThumbColor,
                             thumbShape: RoundSliderThumbShape(
-                              enabledThumbRadius:
-                                  _theme(context).volumeBarThumbSize / 2,
+                              enabledThumbRadius: widget.iconSize != null
+                                  ? widget.iconSize! / 3
+                                  : (_theme(context).buttonBarButtonSize * 0.8),
                               elevation: 0.0,
                               pressedElevation: 0.0,
                             ),

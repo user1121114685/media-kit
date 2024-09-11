@@ -768,23 +768,18 @@ class _MaterialDesktopVideoControlsState
                                         ),
                                       ),
                                     ),
-                                    if (_theme(context)
-                                        .bottomButtonBar
-                                        .isNotEmpty)
-                                      Container(
-                                        height: _theme(context).buttonBarHeight,
-                                        margin: _theme(context)
-                                            .bottomButtonBarMargin,
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children:
-                                              _theme(context).bottomButtonBar,
-                                        ),
+                                    Container(
+                                      alignment: Alignment.bottomLeft,
+                                      height: 50,
+                                      margin: _theme(context)
+                                          .topButtonBarMargin
+                                          .copyWith(bottom: 0),
+                                      child:
+                                          const MaterialDesktopPositionIndicator(
+                                        style: TextStyle(
+                                            fontSize: 20, color: Colors.white),
                                       ),
+                                    ),
                                     if (_theme(context).displaySeekBar)
                                       Transform.translate(
                                         offset: _theme(context)
@@ -810,6 +805,23 @@ class _MaterialDesktopVideoControlsState
                                               },
                                             );
                                           },
+                                        ),
+                                      ),
+                                    if (_theme(context)
+                                        .bottomButtonBar
+                                        .isNotEmpty)
+                                      Container(
+                                        height: _theme(context).buttonBarHeight,
+                                        margin: _theme(context)
+                                            .bottomButtonBarMargin,
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children:
+                                              _theme(context).bottomButtonBar,
                                         ),
                                       ),
                                   ],
@@ -1565,6 +1577,24 @@ class MaterialDesktopVolumeButtonState
   }
 }
 
+class _CustomTrackShape extends RoundedRectSliderTrackShape {
+  @override
+  Rect getPreferredRect({
+    required RenderBox parentBox,
+    Offset offset = Offset.zero,
+    required SliderThemeData sliderTheme,
+    bool isEnabled = false,
+    bool isDiscrete = false,
+  }) {
+    final double trackHeight = sliderTheme.trackHeight!;
+    final double trackLeft = offset.dx;
+    final double trackTop =
+        offset.dy + (parentBox.size.height - trackHeight) / 2;
+    final double trackWidth = parentBox.size.width;
+    return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
+  }
+}
+
 // POSITION INDICATOR
 
 /// MaterialDesktop design position indicator.
@@ -1631,28 +1661,6 @@ class MaterialDesktopPositionIndicatorState
             fontSize: 12.0,
             color: _theme(context).buttonBarButtonColor,
           ),
-    );
-  }
-}
-
-class _CustomTrackShape extends RoundedRectSliderTrackShape {
-  @override
-  Rect getPreferredRect({
-    required RenderBox parentBox,
-    Offset offset = Offset.zero,
-    required SliderThemeData sliderTheme,
-    bool isEnabled = false,
-    bool isDiscrete = false,
-  }) {
-    final height = sliderTheme.trackHeight;
-    final left = offset.dx;
-    final top = offset.dy + (parentBox.size.height - height!) / 2;
-    final width = parentBox.size.width;
-    return Rect.fromLTWH(
-      left,
-      top,
-      width,
-      height,
     );
   }
 }

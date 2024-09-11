@@ -1029,6 +1029,32 @@ class _MaterialVideoControlsState extends State<_MaterialVideoControls> {
                             Stack(
                               alignment: Alignment.bottomCenter,
                               children: [
+                                Container(
+                                  alignment: Alignment.bottomLeft,
+                                  height: _theme(context).seekBarHeight + 30,
+                                  margin: _theme(context)
+                                      .seekBarMargin
+                                      .copyWith(
+                                          bottom: _theme(context)
+                                                  .seekBarMargin
+                                                  .bottom +
+                                              30),
+                                  child: const MaterialPositionIndicator(
+                                    style: TextStyle(
+                                        fontSize: 20, color: Colors.white),
+                                  ),
+                                ),
+                                Container(
+                                  height: _theme(context).buttonBarHeight,
+                                  margin: _theme(context).bottomButtonBarMargin,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: _theme(context).bottomButtonBar,
+                                  ),
+                                ),
                                 if (_theme(context).displaySeekBar)
                                   MaterialSeekBar(
                                     onSeekStart: () {
@@ -1048,17 +1074,6 @@ class _MaterialVideoControlsState extends State<_MaterialVideoControls> {
                                       );
                                     },
                                   ),
-                                Container(
-                                  height: _theme(context).buttonBarHeight,
-                                  margin: _theme(context).bottomButtonBarMargin,
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: _theme(context).bottomButtonBar,
-                                  ),
-                                ),
                               ],
                             ),
                           ],
@@ -1679,7 +1694,8 @@ class MaterialSeekBarState extends State<MaterialSeekBar> {
                         borderRadius: BorderRadius.circular(
                             _theme(context).seekBarThumbSize / 5), // 调整圆角半径
                         child: Container(
-                          width: constraints.maxWidth,
+                          width: constraints.maxWidth -
+                              _theme(context).seekBarThumbSize,
                           height: _theme(context).seekBarHeight,
                           alignment: Alignment.bottomLeft,
                           color: _theme(context).seekBarColor,

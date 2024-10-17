@@ -919,20 +919,7 @@ class _MaterialVideoControlsState extends State<_MaterialVideoControls> {
                             if (_tapPosition == null) {
                               return;
                             }
-                            if (_isInRightSegment(_tapPosition!.dx)) {
-                              if ((!mount && _theme(context).seekOnDoubleTap) ||
-                                  seekOnDoubleTapEnabledWhileControlsAreVisible) {
-                                onDoubleTapSeekForward();
-                              }
-                            } else {
-                              if (_isInLeftSegment(_tapPosition!.dx)) {
-                                if ((!mount &&
-                                        _theme(context).seekOnDoubleTap) ||
-                                    seekOnDoubleTapEnabledWhileControlsAreVisible) {
-                                  onDoubleTapSeekBackward();
-                                }
-                              }
-                            }
+                            controller(context).player.playOrPause();
                           },
                           onHorizontalDragUpdate: (details) {
                             if ((!mount && _theme(context).seekGesture) ||

@@ -3,21 +3,20 @@
 /// Copyright © 2021 & onwards, Hitesh Kumar Saini <saini123hitesh@gmail.com>.
 /// All rights reserved.
 /// Use of this source code is governed by MIT license that can be found in the LICENSE file.
-import 'dart:io';
 import 'dart:async';
-import 'package:flutter/widgets.dart';
-import 'package:flutter/services.dart';
-import 'package:media_kit_video/media_kit_video_controls/media_kit_video_controls.dart';
+import 'dart:io';
 
-import 'package:media_kit_video/src/subtitle/subtitle_view.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:media_kit_video/media_kit_video_controls/media_kit_video_controls.dart'
     as media_kit_video_controls;
+import 'package:media_kit_video/media_kit_video_controls/media_kit_video_controls.dart';
+import 'package:media_kit_video/src/subtitle/subtitle_view.dart';
 import 'package:media_kit_video/src/utils/dispose_safe_notifer.dart';
-
 import 'package:media_kit_video/src/utils/wakelock.dart';
-import 'package:media_kit_video/src/video_view_parameters.dart';
-import 'package:media_kit_video/src/video_controller/video_controller.dart';
 import 'package:media_kit_video/src/video_controller/platform_video_controller.dart';
+import 'package:media_kit_video/src/video_controller/video_controller.dart';
+import 'package:media_kit_video/src/video_view_parameters.dart';
 
 /// {@template video}
 ///
@@ -95,6 +94,9 @@ class Video extends StatefulWidget {
   /// Whether to acquire wake lock while playing the video.
   final bool wakelock;
 
+  /// Widget for displaying danmu (弹幕) overlays
+  final Widget? danmuWidget;
+
   /// Whether to pause the video when application enters background mode.
   final bool pauseUponEnteringBackgroundMode;
 
@@ -131,6 +133,7 @@ class Video extends StatefulWidget {
     this.subtitleViewConfiguration = const SubtitleViewConfiguration(),
     this.onEnterFullscreen = defaultEnterNativeFullscreen,
     this.onExitFullscreen = defaultExitNativeFullscreen,
+    this.danmuWidget,
   }) : super(key: key);
 
   @override
@@ -450,6 +453,10 @@ class VideoState extends State<Video> with WidgetsBindingObserver {
                 if (videoViewParameters.controls != null)
                   Positioned.fill(
                     child: videoViewParameters.controls!.call(this),
+                  ),
+                if (widget.danmuWidget != null)
+                  Positioned.fill(
+                    child: widget.danmuWidget!,
                   ),
               ],
             ),

@@ -4,12 +4,10 @@
 /// All rights reserved.
 /// Use of this source code is governed by MIT license that can be found in the LICENSE file.
 import 'package:flutter/material.dart';
-import 'package:synchronized/synchronized.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-
 import 'package:media_kit_video/media_kit_video_controls/src/controls/methods/video_state.dart';
-
 import 'package:media_kit_video/media_kit_video_controls/src/controls/widgets/video_controls_theme_data_injector.dart';
+import 'package:synchronized/synchronized.dart';
 
 /// Whether a [Video] present in the current [BuildContext] is in fullscreen or not.
 bool isFullscreen(BuildContext context) =>
@@ -69,6 +67,7 @@ Future<void> enterFullscreen(BuildContext context) {
                         subtitleViewConfiguration:
                             videoViewParametersNotifierValue
                                 .value.subtitleViewConfiguration,
+                        danmuWidget: stateValue.widget.danmuWidget,
                         onEnterFullscreen: stateValue.widget.onEnterFullscreen,
                         onExitFullscreen: stateValue.widget.onExitFullscreen,
                       ),
